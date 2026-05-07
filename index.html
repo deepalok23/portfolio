@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Alok — Dil Se Hip Hop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060608;
+  --bg2: #0d0d12;
+  --neon: #c8ff00;
+  --neon2: #ff3c6e;
+  --gold: #ffd166;
+  --text: #e8e8e8;
+  --muted: #666;
+  --card: #111116;
+  --border: rgba(200,255,0,0.15);
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Cursor */
+.cursor { width:12px;height:12px;background:var(--neon);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transition:transform 0.1s;mix-blend-mode:difference; }
+.cursor-ring { width:36px;height:36px;border:1px solid var(--neon);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transition:all 0.15s ease;opacity:0.5; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 20px 5vw;
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(to bottom, rgba(6,6,8,0.95), transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(200,255,0,0.05);
+  transition: all 0.3s;
+}
+nav.scrolled { background: rgba(6,6,8,0.98); border-bottom-color: var(--border); }
+.nav-logo { font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--neon);text-decoration:none;letter-spacing:0.03em;white-space:nowrap; }
+.nav-links { display:flex;gap:28px;list-style:none;align-items:center; }
+.nav-links a { color:var(--muted);text-decoration:none;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.3s;position:relative; }
+.nav-links a::after { content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--neon);transition:width 0.3s; }
+.nav-links a:hover { color:var(--neon); }
+.nav-links a:hover::after { width:100%; }
+.nav-cta { background:var(--neon)!important;color:#000!important;padding:8px 20px;border-radius:2px;font-weight:700; }
+.nav-cta:hover { background:var(--neon2)!important;color:#fff!important; }
+.nav-cta::after { display:none!important; }
+.ham { display:none;flex-direction:column;gap:5px;cursor:none;background:none;border:none;padding:4px; }
+.ham span { width:24px;height:2px;background:var(--text);display:block;transition:all 0.3s; }
+
+/* HERO */
+#hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 120px 5vw 60px;
+  position: relative;
+  overflow: hidden;
+  gap: 60px;
+}
+.hero-bg {
+  position:absolute;inset:0;
+  background: radial-gradient(ellipse 60% 60% at 70% 50%, rgba(200,255,0,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,60,110,0.06) 0%, transparent 70%);
+}
+.hero-grid-lines {
+  position:absolute;inset:0;
+  background-image: linear-gradient(rgba(200,255,0,0.03) 1px, transparent 1px), linear-gradient(90deg,rgba(200,255,0,0.03) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;
+}
+.hero-left { position:relative;z-index:2; }
+
+.hero-tagline-top {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--neon);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 2px;
+  margin-bottom: 28px;
+  display: inline-block;
+}
+.hero-name {
+  font-family:'Syne',sans-serif;
+  font-size:clamp(3.5rem,7vw,6.5rem);
+  font-weight:800;line-height:0.95;letter-spacing:-0.03em;margin-bottom:18px;
+}
+.hero-name span { display:block;background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,0.6) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.hero-name .accent { background:linear-gradient(135deg,var(--neon),#88ff00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+
+.hero-dil {
+  font-size:0.85rem;
+  color: var(--neon2);
+  letter-spacing: 0.08em;
+  margin-bottom: 20px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+}
+
+.hero-tagline {
+  font-size:0.88rem;line-height:1.75;color:var(--muted);margin-bottom:36px;max-width:420px;
+}
+.hero-btns { display:flex;gap:16px;flex-wrap:wrap; }
+.btn-primary {
+  background:var(--neon);color:#000;padding:14px 28px;
+  font-family:'Space Mono',monospace;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  border:none;cursor:none;text-decoration:none;display:inline-flex;align-items:center;gap:10px;
+  transition:all 0.3s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);
+}
+.btn-primary:hover { background:var(--neon2);color:#fff;transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,60,110,0.3); }
+.btn-secondary {
+  border:1px solid var(--border);color:var(--neon);padding:14px 28px;
+  font-family:'Space Mono',monospace;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  background:transparent;cursor:none;text-decoration:none;display:inline-flex;align-items:center;gap:10px;
+  transition:all 0.3s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);
+}
+.btn-secondary:hover { background:rgba(200,255,0,0.08);border-color:var(--neon);transform:translateY(-2px); }
+
+.hero-stats { display:flex;gap:36px;margin-top:48px;padding-top:36px;border-top:1px solid var(--border); }
+.stat-num { font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--neon);line-height:1;margin-bottom:4px; }
+.stat-label { font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted); }
+
+/* HERO PHOTO */
+.hero-right { position:relative;display:flex;align-items:center;justify-content:center;z-index:2; }
+.hero-photo-frame { position:relative;width:min(400px,100%); }
+.hero-photo-frame::before { content:'';position:absolute;inset:-2px;background:linear-gradient(135deg,var(--neon),transparent,var(--neon2));border-radius:4px;z-index:0; }
+.hero-photo-frame::after { content:'';position:absolute;top:16px;left:16px;right:-16px;bottom:-16px;border:1px solid rgba(200,255,0,0.2);border-radius:4px;z-index:-1; }
+.hero-photo { width:100%;display:block;position:relative;z-index:1;border-radius:3px;filter:grayscale(5%) contrast(1.02);object-fit:contain; }
+
+
+/* Section */
+section { padding:96px 5vw; }
+.section-header { margin-bottom:56px; }
+.section-tag { font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--neon);margin-bottom:14px;display:flex;align-items:center;gap:12px; }
+.section-tag::before { content:'';width:30px;height:1px;background:var(--neon); }
+.section-title { font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;line-height:1;letter-spacing:-0.02em; }
+.section-title .dim { color:rgba(255,255,255,0.3); }
+
+/* ABOUT */
+#about { background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border); }
+.about-grid { display:grid;grid-template-columns:1fr 1.4fr;gap:72px;align-items:start; }
+.about-photo-col { position:sticky;top:100px; }
+.about-photo-wrap { position:relative; }
+.about-photo { width:100%;border-radius:4px;filter:grayscale(10%);display:block; }
+.about-photo-overlay { position:absolute;inset:0;background:linear-gradient(to top,rgba(6,6,8,0.4),transparent 50%);border-radius:4px; }
+.about-genres { display:flex;flex-wrap:wrap;gap:8px;margin-top:18px; }
+.genre-tag { font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;border:1px solid var(--border);color:var(--neon);padding:5px 12px;border-radius:2px;transition:all 0.3s; }
+.genre-tag:hover { background:var(--neon);color:#000;border-color:var(--neon); }
+
+/* plugins section */
+.plugins-section { margin-top:28px; }
+.plugins-label { font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:12px; }
+.plugins-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }
+.plugin-chip {
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #0d0d14, #111118);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 10px 10px;
+  border-radius: 5px;
+  font-size: 0.6rem;
+  letter-spacing: 0.09em;
+  text-align: center;
+  color: rgba(232,232,232,0.55);
+  transition: color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  text-transform: uppercase;
+  cursor: default;
+  position: relative;
+  width: 100%;
+}
+.plugin-chip:hover {
+  /* NO border changes — only box-shadow for glow to prevent layout shift */
+  color: #c8ff00;
+  background: linear-gradient(135deg, #131a06, #0e150a);
+  box-shadow:
+    0 0 0 1px rgba(200,255,0,0.55),
+    0 0 10px rgba(200,255,0,0.25),
+    0 0 22px rgba(200,255,0,0.1),
+    inset 0 0 8px rgba(200,255,0,0.06);
+}
+.plugin-chip.highlight {
+  color: rgba(200,255,0,0.75);
+  border-color: rgba(200,255,0,0.2);
+}
+
+.daw-badge { display:inline-flex;align-items:center;gap:10px;background:rgba(200,255,0,0.07);border:1px solid var(--border);padding:10px 16px;border-radius:2px;font-size:0.75rem;color:var(--neon);margin-top:14px;width:100%; }
+.daw-badge strong { color:#fff; }
+
+.about-content p { font-size:0.88rem;line-height:1.9;color:rgba(232,232,232,0.7);margin-bottom:18px; }
+.about-content p strong { color:var(--neon); }
+.about-milestones { margin-top:44px;border-left:1px solid var(--border);padding-left:28px; }
+.milestone { position:relative;margin-bottom:28px; }
+.milestone::before { content:'';position:absolute;left:-33px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px var(--neon); }
+.milestone-year { font-size:0.62rem;letter-spacing:0.15em;color:var(--neon);margin-bottom:3px; }
+.milestone-text { font-size:0.83rem;color:var(--text); }
+
+/* MUSIC */
+#music { background:var(--bg); }
+.yt-banner { display:flex;align-items:center;justify-content:space-between;background:rgba(255,0,0,0.07);border:1px solid rgba(255,0,0,0.18);padding:14px 22px;border-radius:4px;margin-bottom:36px;flex-wrap:wrap;gap:12px; }
+.yt-banner-left { display:flex;align-items:center;gap:12px; }
+.yt-logo { color:#ff0000;font-size:1.4rem; }
+.yt-channel-name { font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem; }
+.yt-sub { font-size:0.68rem;color:var(--muted); }
+.yt-btn { background:#ff0000;color:#fff;padding:9px 18px;text-decoration:none;font-family:'Space Mono',monospace;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border-radius:2px;transition:all 0.3s;cursor:none; }
+.yt-btn:hover { background:#cc0000;transform:translateY(-1px); }
+
+.video-card { background:var(--card);border:1px solid rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;transition:all 0.4s;text-decoration:none;display:block;cursor:none; }
+.video-card:hover { border-color:var(--border);transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+
+/* Thumbnail — use REAL thumbnail from YouTube */
+/* 1. Basic Page Styling */
+
+    /* 2. The Grid Layout */
+    .music-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* 3. The Video Card */
+    .video-thumb {
+      display: block; /* Makes the whole area clickable */
+      text-decoration: none;
+      position: relative;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .video-thumb:hover {
+      transform: translateY(-5px); /* Gentle lift on hover */
+    }
+
+    /* 4. Aspect Ratio and Image */
+    .video-thumb img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      opacity: 0.9;
+    }
+
+    .video-thumb:hover img {
+      opacity: 1;
+    }
+
+    /* 5. Simple Play Button Overlay */
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 0, 0, 0.8);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* The white triangle icon */
+    .play-button::after {
+      content: "";
+      display: block;
+      border-style: solid;
+      border-width: 10px 0 10px 18px;
+      border-color: transparent transparent transparent white;
+      margin-left: 5px;
+    }
+
+/* PLUGINS / GEAR SECTION */
+#gear { background:var(--bg2);border-top:1px solid var(--border); }
+.gear-intro { font-size:0.88rem;line-height:1.8;color:var(--muted);max-width:560px;margin-bottom:48px; }
+.gear-images { display:block; }
+.gear-img-wrap {
+  border:1px solid var(--border);
+  border-radius:4px;
+  overflow:hidden;
+  background:var(--card);
+  transition:all 0.4s;
+}
+.gear-img-wrap:hover { border-color:var(--neon);box-shadow:0 0 30px rgba(200,255,0,0.08); }
+.gear-img-label { padding:14px 18px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.8rem;color:var(--neon);border-bottom:1px solid var(--border); }
+.gear-img-wrap img { width:100%;display:block;filter:brightness(0.95); }
+
+/* GALLERY */
+#gallery { background:var(--bg); }
+.gallery-grid { display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:220px;gap:12px; }
+.gallery-item { overflow:hidden;border-radius:4px;position:relative;cursor:none; }
+.gallery-item:nth-child(1) { grid-column:span 2;grid-row:span 2; }
+.gallery-item:nth-child(5) { grid-column:span 2; }
+.gallery-item img { width:100%;height:100%;object-fit:cover;transition:transform 0.6s,filter 0.4s;filter:grayscale(25%) brightness(0.85); }
+.gallery-item:hover img { transform:scale(1.08);filter:grayscale(0%) brightness(1); }
+.gallery-overlay { position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.5),transparent);opacity:0;transition:opacity 0.4s; }
+.gallery-item:hover .gallery-overlay { opacity:1; }
+
+/* SOCIAL */
+#social { background:var(--bg2);border-top:1px solid var(--border);text-align:center; }
+.social-links { display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:44px; }
+.social-card { display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid rgba(255,255,255,0.06);padding:16px 26px;border-radius:4px;text-decoration:none;color:var(--text);transition:all 0.3s;min-width:180px;cursor:none; }
+.social-card:hover { border-color:var(--neon);background:rgba(200,255,0,0.05);transform:translateY(-3px); }
+.social-icon { width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0; }
+.social-icon.yt { background:rgba(255,0,0,0.15);color:#ff0000; }
+.social-icon.ig { background:rgba(200,60,200,0.15);color:#e1306c; }
+.social-icon.sp { background:rgba(29,185,84,0.15);color:#1db954; }
+.social-icon.tw { background:rgba(255,255,255,0.08);color:#e8e8e8; }
+.social-meta { text-align:left; }
+.social-platform { font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase; }
+.social-handle { font-size:0.83rem;font-weight:700;font-family:'Syne',sans-serif; }
+
+/* CONTACT */
+#contact { background:var(--bg); }
+.contact-grid { display:grid;grid-template-columns:1fr 1.2fr;gap:72px;align-items:start; }
+.contact-info h3 { font-family:'Syne',sans-serif;font-size:1.1rem;margin-bottom:10px;color:var(--neon); }
+.contact-info p { font-size:0.83rem;line-height:1.8;color:var(--muted);margin-bottom:36px; }
+.contact-detail { display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:0.83rem;color:var(--text); }
+.contact-detail-icon { width:34px;height:34px;background:rgba(200,255,0,0.08);border:1px solid var(--border);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.85rem; }
+.contact-form { display:flex;flex-direction:column;gap:14px; }
+.form-row { display:grid;grid-template-columns:1fr 1fr;gap:14px; }
+.form-group { display:flex;flex-direction:column;gap:7px; }
+.form-group label { font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted); }
+.form-group input,.form-group textarea,.form-group select { background:var(--card);border:1px solid rgba(255,255,255,0.08);color:var(--text);padding:12px 14px;font-family:'Space Mono',monospace;font-size:0.78rem;border-radius:2px;outline:none;transition:border-color 0.3s;width:100%; }
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus { border-color:var(--neon);box-shadow:0 0 0 2px rgba(200,255,0,0.07); }
+.form-group textarea { resize:vertical;min-height:110px; }
+.form-group select option { background:var(--card); }
+
+
+
+/* Real YouTube thumbnails */
+.real-thumb { width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s,filter 0.4s;filter:brightness(0.9); }
+.video-card:hover .real-thumb { transform:scale(1.05);filter:brightness(1); }
+.thumb-fallback { position:absolute;inset:0; }
+/* Track group headers */
+.tracks-group-header { margin-bottom:20px; }
+.tracks-group-label {
+  font-family:'Syne',sans-serif;
+  font-size:0.85rem;
+  font-weight:700;
+  color:var(--neon);
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  padding:8px 16px;
+  border:1px solid var(--border);
+  border-radius:3px;
+  background:rgba(200,255,0,0.04);
+  display:inline-block;
+}
+/* Recent grid — 5 columns on wide screens */
+.recent-grid { grid-template-columns:repeat(5,1fr) !important; }
+@media (max-width:1200px) { .recent-grid { grid-template-columns:repeat(3,1fr) !important; } }
+@media (max-width:700px) { .recent-grid { grid-template-columns:repeat(2,1fr) !important; } }
+
+/* Gear single image */
+.gear-single-wrap {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--card);
+  transition: all 0.4s;
+  max-width: 100%;
+}
+.gear-single-wrap:hover {
+  border-color: var(--neon);
+  box-shadow: 0 0 40px rgba(200,255,0,0.1);
+}
+.gear-single-img {
+  width: 100%;
+  display: block;
+  filter: brightness(0.95);
+  transition: filter 0.4s;
+}
+.gear-single-wrap:hover .gear-single-img { filter: brightness(1.05); }
+
+/* Remove gear-images grid */
+.gear-images { display: block; }
+
+footer { background:var(--bg2);border-top:1px solid var(--border);padding:36px 5vw;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px; }
+.footer-logo { font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--neon); }
+.footer-text { font-size:0.65rem;color:var(--muted); }
+.footer-dil { font-size:0.7rem;color:var(--neon2);font-family:'Syne',sans-serif;font-weight:700;letter-spacing:0.05em; }
+
+/* Noise overlay */
+body::after { content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");opacity:0.025;pointer-events:none;z-index:9997; }
+
+.reveal { opacity:0;transform:translateY(28px);transition:opacity 0.75s ease,transform 0.75s ease; }
+.reveal.visible { opacity:1;transform:translateY(0); }
+
+@media (max-width:900px) {
+  #hero { grid-template-columns:1fr;text-align:center;padding-top:100px; }
+  .hero-right { order:-1; }
+  .hero-photo-frame { width:min(280px,80vw); }
+  .hero-tagline { margin:0 auto 36px; }
+  .hero-btns { justify-content:center; }
+  .hero-stats { justify-content:center; }
+  .about-grid,.contact-grid { grid-template-columns:1fr; }
+  .about-photo-col { position:static; }
+  .gallery-grid { grid-template-columns:repeat(2,1fr); }
+  .gallery-item:nth-child(1) { grid-column:span 2; }
+  .form-row { grid-template-columns:1fr; }
+  .nav-links { display:none; }
+  .ham { display:flex; }
+  .gear-images { grid-template-columns:1fr; }
+  .plugins-grid { grid-template-columns:repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#hero" class="nav-logo">Deep Alok</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#music">Music</a></li>
+    <li><a href="#gear">Gear</a></li>
+    <li><a href="#social">Connect</a></li>
+    <li><a href="#contact" class="nav-cta">Contact</a></li>
+  </ul>
+  <button class="ham" id="hamBtn"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-left">
+    <div class="hero-tagline-top">Lyricist · Music Producer · Mixing &amp; Mastering Engineer</div>
+    <h1 class="hero-name">
+      <span>DEEP</span>
+      <span class="accent">ALOK</span>
+    </h1>
+    <p class="hero-tagline">Making music from the heart. Raw, cinematic soundscapes across Afro, Drill, Trap, Boom Bap, R&amp;B, Lofi &amp; Deep House — produced entirely in FL Studio.</p>
+    <div class="hero-btns">
+      <a href="#music" class="btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+        Listen Now
+      </a>
+      <a href="https://youtube.com/@deep_alok" target="_blank" class="btn-secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+        YouTube
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">2+</div>
+        <div class="stat-label">Years Active</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">28+</div>
+        <div class="stat-label">Tracks</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">FL</div>
+        <div class="stat-label">Studio DAW</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-photo-frame">
+      <img src="images/deepalok_1.jpeg" alt="Deep Alok" class="hero-photo">
+      
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <div class="section-tag">The Artist</div>
+    <h2 class="section-title">About <span class="dim">Deep Alok</span></h2>
+  </div>
+  <div class="about-grid">
+    <div class="about-photo-col reveal">
+      <div class="about-photo-wrap">
+        <img src="images/deepalok_2.png" alt="Deep Alok" class="about-photo">
+        <div class="about-photo-overlay"></div>
+      </div>
+      <div class="plugins-label" style="margin-top:20px;margin-bottom:10px;">Genres</div>
+      <div class="about-genres">
+        <span class="genre-tag">Afro</span>
+        <span class="genre-tag">Drill</span>
+        <span class="genre-tag">Trap</span>
+        <span class="genre-tag">Boom Bap</span>
+        <span class="genre-tag">R&B</span>
+        <span class="genre-tag">Lofi</span>
+        <span class="genre-tag">Pop</span>
+        <span class="genre-tag">Deep House</span>
+      </div>
+      <div class="daw-badge">🎛️ DAW: <strong>FL Studio</strong></div>
+      <div class="plugins-section">
+        <div class="plugins-label">Plugins &amp; Tools</div>
+        <div class="plugins-grid">
+          <div class="plugin-chip highlight">Serum</div>
+          <div class="plugin-chip highlight">FabFilter</div>
+          <div class="plugin-chip highlight">Ozone 12</div>
+          <div class="plugin-chip">Kontakt 8</div>
+          <div class="plugin-chip">Xpand! 2</div>
+          <div class="plugin-chip">Waves</div>
+          <div class="plugin-chip">Omnisphere 3</div>
+          <div class="plugin-chip">Analog Lab V</div>
+          <div class="plugin-chip">Melodyne</div>
+          <div class="plugin-chip highlight">Splice</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-content reveal">
+      <p>Deep Alok is a <strong>lyricist, multi-genre rapper, music producer, and mixing &amp; mastering engineer</strong> from India — making music <strong>Dil Se</strong> (from the heart). His journey began in 2022 with "It's Freestyle" — a raw, unfiltered introduction to the world — and has since grown into a diverse body of work spanning over 18 tracks.</p>
+      <p>His artistry spans the full sonic spectrum: from the cinematic rage of <strong>UK Drill and Trap</strong> ("Panne Faad", "Chale Naam") to the introspective weight of <strong>Lofi Rap and R&amp;B</strong> ("Shaayad Mai", "3:00 AM", "Sapne"). Each release is a chapter — immersive, intentional, and deeply personal.</p>
+      <p>As a <strong>music creator</strong>, Deep Alok handles everything — writing, producing in FL Studio, and mastering with professional tools like Serum, FabFilter, Ozone 12, and Omnisphere 3. His recent work like <strong>"Sky High"</strong>, <strong>"Hara Firbhi"</strong>, and <strong>"Udaan"</strong> continues to push his sound into new melodic territories.</p>
+      <div class="about-milestones">
+        <div class="milestone">
+          <div class="milestone-year">2022 · DISCOVERY</div>
+          <div class="milestone-text">Began exploring the world of music — discovering genres, studying artists, building an ear for sound, and gaining foundational knowledge of music theory and production basics.</div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-year">2023 · FIRST STEPS</div>
+          <div class="milestone-text">Took the leap and officially started his journey as an independent artist. Wrote his first lyrics, stepped into the recording booth, and released his debut track — putting his voice out into the world for the first time.</div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-year">2024 · PRODUCTION &amp; CRAFT</div>
+          <div class="milestone-text">Leveled up significantly — diving deep into music production, mixing, and mastering. Started crafting his own beats from scratch, developing a distinct sonic identity, and releasing more polished, self-produced records.</div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-year">2025 · GROWTH &amp; FREELANCING</div>
+          <div class="milestone-text">Expanded beyond personal projects — offering freelance music production, mixing &amp; mastering services to other artists. Continued releasing new music while steadily growing his audience and refining his craft.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MUSIC -->
+<section id="music">
+  <div class="section-header reveal">
+    <div class="section-tag">Discography</div>
+    <h2 class="section-title">Latest <span class="dim">Tracks</span></h2>
+  </div>
+
+  <div class="yt-banner reveal">
+    <div class="yt-banner-left">
+      <div class="yt-logo">▶</div>
+      <div>
+        <div class="yt-channel-name">@deep_alok</div>
+        <div class="yt-sub">Click any thumbnail to watch on YouTube</div>
+      </div>
+    </div>
+    <a href="https://youtube.com/@deep_alok" target="_blank" class="yt-btn">Subscribe →</a>
+  </div>
+
+  <!-- RECENT 5 -->
+  <div class="tracks-group-header reveal">
+    <span class="tracks-group-label">🔥 Recent 5 Tracks</span>
+  </div>
+ <div class="music-grid recent-grid">
+    
+    <a href="https://www.youtube.com/watch?v=khYYtnOqwqo" target="_blank" class="video-thumb">
+        <img src="https://img.youtube.com/vi/khYYtnOqwqo/maxresdefault.jpg" alt="Thumbnail">
+    </a>
+
+    <a href="https://www.youtube.com/watch?v=f6CshYFi3wc" target="_blank" class="video-thumb">
+        <img src="https://img.youtube.com/vi/f6CshYFi3wc/maxresdefault.jpg" alt="Thumbnail">
+    </a>
+
+    <a href="https://www.youtube.com/watch?v=akzcjG6I074" target="_blank" class="video-thumb">
+        <img src="https://img.youtube.com/vi/akzcjG6I074/maxresdefault.jpg" alt="Thumbnail">
+    </a>
+
+    <a href="https://www.youtube.com/watch?v=wUxqYnDligc" target="_blank" class="video-thumb">
+        <img src="https://img.youtube.com/vi/wUxqYnDligc/maxresdefault.jpg" alt="Thumbnail">
+    </a>
+
+    <a href="https://www.youtube.com/watch?v=nbb1hS7udcY" target="_blank" class="video-thumb">
+        <img src="https://img.youtube.com/vi/nbb1hS7udcY/maxresdefault.jpg" alt="Thumbnail">
+    </a>
+
+</div>
+
+  
+
+</section>
+
+<!-- GEAR / PLUGINS -->
+<section id="gear">
+  <div class="section-header reveal">
+    <div class="section-tag">Studio Setup</div>
+    <h2 class="section-title">Plugins &amp; <span class="dim">Gear</span></h2>
+  </div>
+  <p class="gear-intro reveal">All music is produced in <strong style="color:var(--neon)">FL Studio</strong>, powered by an arsenal of industry-standard plugins and virtual instruments for production, sound design, and professional mixing &amp; mastering.</p>
+  <div class="gear-single-wrap reveal">
+      <img src="images/Plugins_img.png" alt="Deep Alok Plugins — Serum 2, Kontakt 8, Omnisphere 3, Arturia Analog Lab V, FabFilter, Melodyne, Ozone 12, Waves, Splice" class="gear-single-img">
+    </div>
+</section>
+
+<!-- SOCIAL -->
+<section id="social">
+  <div class="section-header reveal">
+    <div class="section-tag">Stay Connected</div>
+    <h2 class="section-title">Follow <span class="dim">The Journey</span></h2>
+  </div>
+  <div class="social-links">
+    <a href="https://youtube.com/@deep_alok" target="_blank" class="social-card">
+      <div class="social-icon yt">▶</div>
+      <div class="social-meta">
+        <div class="social-platform">YouTube</div>
+        <div class="social-handle">@deep_alok</div>
+      </div>
+    </a>
+    <a href="https://www.instagram.com/deepalok_" target="_blank" class="social-card">
+      <div class="social-icon ig">◉</div>
+      <div class="social-meta">
+        <div class="social-platform">Instagram</div>
+        <div class="social-handle">@deepalok_</div>
+      </div>
+    </a>
+    <a href="https://x.com/DeepAl0k_" target="_blank" class="social-card">
+      <div class="social-icon tw">✕</div>
+      <div class="social-meta">
+        <div class="social-platform">Twitter / X</div>
+        <div class="social-handle">@DeepAl0k_</div>
+      </div>
+    </a>
+    
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header reveal">
+    <div class="section-tag">Get In Touch</div>
+    <h2 class="section-title">Contact <span class="dim">Deep Alok</span></h2>
+  </div>
+  <div class="contact-grid">
+    <div class="reveal">
+      <h3>For Business</h3>
+      <p>Collaborations, beat sales, mixing &amp; mastering sessions, music consultations, and more. Reach out — Dil Se.</p>
+      <div class="contact-detail">
+        <div class="contact-detail-icon">✉</div>
+        misteralokbuisness@gmail.com
+      </div>
+      <div class="contact-detail">
+        <div class="contact-detail-icon">📍</div>
+        India · Available Worldwide
+      </div>
+    </div>
+    <div class="contact-form reveal" id="contactForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your Name *</label>
+          <input type="text" id="senderName" placeholder="Full name">
+        </div>
+        <div class="form-group">
+          <label>Your Email *</label>
+          <input type="email" id="senderEmail" placeholder="you@email.com">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Inquiry Type</label>
+        <select id="inquiryType">
+          <option value="">Select type</option>
+          <option>Collaboration</option>
+          <option>Mixing &amp; Mastering</option>
+          <option>Beat Purchase</option>
+          <option>Feature / Verse</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message *</label>
+        <textarea id="msgBody" placeholder="Tell me about your project..."></textarea>
+      </div>
+      <button type="button" class="btn-primary" id="sendBtn" onclick="submitForm()" style="align-self:flex-start;cursor:none;">
+        <span id="sendBtnText">Send Message →</span>
+      </button>
+      <div id="formMsg" style="display:none;margin-top:12px;padding:12px 16px;border-radius:3px;font-size:0.78rem;"></div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">DEEP ALOK</div>
+  <div class="footer-text">© 2025 Deep Alok. All rights reserved. · FL Studio · India</div>
+</footer>
+
+<script>
+// Cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => {
+  mx=e.clientX; my=e.clientY;
+  cursor.style.left=mx-6+'px'; cursor.style.top=my-6+'px';
+});
+(function anim() {
+  rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+  ring.style.left=rx-18+'px'; ring.style.top=ry-18+'px';
+  requestAnimationFrame(anim);
+})();
+document.querySelectorAll('a,button,.video-card,.gallery-item,.social-card,.review-card,.gear-img-wrap').forEach(el => {
+  el.addEventListener('mouseenter',()=>cursor.style.transform='scale(2.5)');
+  el.addEventListener('mouseleave',()=>cursor.style.transform='scale(1)');
+});
+
+// Thumbnail fallback — render styled canvas as bg if img src is empty
+// Helper: parse any hex color (#rgb or #rrggbb) → rgba string
+function hexToRgba(hex, alpha) {
+  hex = hex.replace('#','');
+  if(hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  if(hex.length !== 6) return `rgba(200,255,0,${alpha})`;
+  const r = parseInt(hex.slice(0,2),16);
+  const g = parseInt(hex.slice(2,4),16);
+  const b = parseInt(hex.slice(4,6),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+document.querySelectorAll('.thumb-img').forEach(img => {
+  const title = img.dataset.title || '';
+  const bg = img.dataset.bg || '#111116';
+  const color = img.dataset.color || '#c8ff00';
+  const canvas = document.createElement('canvas');
+  canvas.width = 480; canvas.height = 270;
+  const ctx = canvas.getContext('2d');
+
+  // Background gradient — safely extract hex colors
+  const bgParts = bg.match(/#[a-fA-F0-9]{3,6}/g) || ['#111116','#060608'];
+  const c0 = bgParts[0].length === 4
+    ? '#'+bgParts[0][1]+bgParts[0][1]+bgParts[0][2]+bgParts[0][2]+bgParts[0][3]+bgParts[0][3]
+    : bgParts[0];
+  const c1 = bgParts[1]
+    ? (bgParts[1].length === 4 ? '#'+bgParts[1][1]+bgParts[1][1]+bgParts[1][2]+bgParts[1][2]+bgParts[1][3]+bgParts[1][3] : bgParts[1])
+    : c0;
+  const grad = ctx.createLinearGradient(0,0,480,270);
+  grad.addColorStop(0, c0);
+  grad.addColorStop(1, c1);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,480,270);
+
+  // Subtle grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  for(let x=0;x<480;x+=40){ ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,270);ctx.stroke(); }
+  for(let y=0;y<270;y+=40){ ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(480,y);ctx.stroke(); }
+
+  // Neon glow — use hexToRgba to avoid invalid color strings
+  const glow = ctx.createRadialGradient(240,135,10,240,135,120);
+  glow.addColorStop(0, hexToRgba(color, 0.18));
+  glow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0,0,480,270);
+
+  // Title text
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const fontSize = title.length > 16 ? 22 : title.length > 10 ? 28 : 34;
+  ctx.font = `800 ${fontSize}px Arial, sans-serif`;
+
+  // Word wrap
+  const words = title.split(' ');
+  const lines = [];
+  let line = '';
+  words.forEach(w => {
+    const test = line ? line+' '+w : w;
+    if(ctx.measureText(test).width > 420 && line){ lines.push(line); line=w; }
+    else line = test;
+  });
+  if(line) lines.push(line);
+  const lineH = fontSize + 8;
+  const startY = 135 - ((lines.length-1)*lineH)/2;
+  lines.forEach((l,i) => ctx.fillText(l, 240, startY+i*lineH));
+
+  // Watermark
+  ctx.fillStyle = 'rgba(255,255,255,0.18)';
+  ctx.font = '500 11px Arial';
+  ctx.fillText('DEEP ALOK', 240, 252);
+
+  img.src = canvas.toDataURL('image/jpeg', 0.88);
+});
+
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Reveal on scroll
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e,i) => {
+    if(e.isIntersecting) {
+      e.target.style.transitionDelay = (i%4)*0.08+'s';
+      e.target.classList.add('visible');
+    }
+  });
+}, {threshold:0.08, rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Contact form — sends via Formspree (no blocking, no mailto issues)
+async function submitForm() {
+  const name    = document.getElementById('senderName').value.trim();
+  const email   = document.getElementById('senderEmail').value.trim();
+  const type    = document.getElementById('inquiryType').value || 'General';
+  const msg     = document.getElementById('msgBody').value.trim();
+  const btnText = document.getElementById('sendBtnText');
+  const btn     = document.getElementById('sendBtn');
+
+  // Validate
+  if (!name)  { showMsg('error', '⚠️ Please enter your name.'); return; }
+  if (!email) { showMsg('error', '⚠️ Please enter your email address.'); return; }
+  const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailReg.test(email)) { showMsg('error', '⚠️ Please enter a valid email address.'); return; }
+  if (!msg)   { showMsg('error', '⚠️ Please write a message.'); return; }
+
+  // Loading state
+  btnText.textContent = 'Sending...';
+  btn.style.opacity = '0.7';
+  btn.style.pointerEvents = 'none';
+
+  try {
+    const res = await fetch('https://formspree.io/f/xnnqwodv', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        inquiry: type,
+        message: msg,
+        _replyto: email,
+        _subject: `[Deep Alok Portfolio] ${type} from ${name}`
+      })
+    });
+
+    if (res.ok) {
+      showMsg('success', '✅ Message sent! Deep Alok will get back to you soon.');
+      document.getElementById('senderName').value  = '';
+      document.getElementById('senderEmail').value = '';
+      document.getElementById('inquiryType').value = '';
+      document.getElementById('msgBody').value     = '';
+    } else {
+      const data = await res.json();
+      // Formspree free tier — fallback to mailto if form not yet activated
+      fallbackMailto(name, email, type, msg);
+    }
+  } catch (err) {
+    // Network error — open mailto as reliable fallback
+    fallbackMailto(name, email, type, msg);
+  }
+
+  btnText.textContent = 'Send Message →';
+  btn.style.opacity = '1';
+  btn.style.pointerEvents = 'auto';
+}
+
+function fallbackMailto(name, email, type, msg) {
+  const subject = encodeURIComponent(`[Portfolio] ${type} from ${name}`);
+  const body    = encodeURIComponent(
+    `Hi Deep Alok,
+
+Name: ${name}
+Email: ${email}
+Inquiry: ${type}
+
+${msg}`
+  );
+  window.open(`mailto:misteralokbuisness@gmail.com?subject=${subject}&body=${body}`, '_blank');
+  showMsg('success', '✅ Your email client opened — please hit Send to complete your message.');
+}
+
+function showMsg(type, text) {
+  const el = document.getElementById('formMsg');
+  el.style.display  = 'block';
+  el.style.background = type === 'success' ? 'rgba(200,255,0,0.08)' : 'rgba(255,60,110,0.08)';
+  el.style.border     = type === 'success' ? '1px solid rgba(200,255,0,0.25)' : '1px solid rgba(255,60,110,0.25)';
+  el.style.color      = type === 'success' ? '#c8ff00' : '#ff3c6e';
+  el.textContent = text;
+  setTimeout(() => { el.style.display = 'none'; }, 9000);
+}
+
+// Mobile nav
+document.getElementById('hamBtn').addEventListener('click', () => {
+  const links = document.querySelector('.nav-links');
+  const open = links.getAttribute('data-open')==='1';
+  if(open){ links.removeAttribute('style'); links.setAttribute('data-open','0'); }
+  else {
+    Object.assign(links.style,{display:'flex',flexDirection:'column',position:'absolute',top:'70px',left:'0',right:'0',background:'rgba(6,6,8,0.98)',padding:'20px 5vw 30px',borderBottom:'1px solid rgba(200,255,0,0.1)',zIndex:'999'});
+    links.setAttribute('data-open','1');
+  }
+});
+</script>
+</body>
+</html>
